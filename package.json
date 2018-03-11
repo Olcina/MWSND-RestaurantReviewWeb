@@ -1,0 +1,19 @@
+{
+  "name": "udacity-restaurant-stage-1",
+  "version": "1.0.0",
+  "description": "A simple restaurant review app",
+  "main": "index.js",
+  "repository": "https://github.com/Olcina/restaurant-review-app.git",
+  "author": "Olcina <karlos.olcina@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "devDependencies": {
+    "webpack": "^4.1.1"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}

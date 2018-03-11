@@ -16,26 +16,39 @@
   </header>
 
   <main id="maincontent">
-    <section id="map-container">
-      <div id="map"></div>
-    </section>
+    <div class="header-container">
+      <div class="map-wrap">
 
-    <section>
-      <div class="filter-options">
-        <h2>Search your restaurant!</h2>
-        <div class="select building">
-          <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-            <option value="all">All Neighborhoods</option>
-          </select>
-        </div>
-        <div class="select pan">
-          <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-            <option value="all">All Cuisines</option>
-          </select>
-        </div>
+        <section id="map-container">
+          <div id="map"></div>
+        </section>
+        
       </div>
+      <div class="filter-wrap">
+
+        <section>
+          <div class="filter-options">
+            <h2>Search your restaurant!</h2>
+            <div class="world-map"></div>
+            <div class="select building">
+              <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+                <option value="all">All Neighborhoods</option>
+              </select>
+            </div>
+            <div class="select pan">
+              <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+                <option value="all">All Cuisines</option>
+              </select>
+            </div>
+          </div>
+        </section>
+      </div>
+      
+    </div>
+
+    <div class="rest-list-wrap">
       <ul id="restaurants-list"></ul>
-    </section>
+    </div>
 
   </main>
 

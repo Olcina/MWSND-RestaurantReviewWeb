@@ -221,6 +221,16 @@ select {
    padding-bottom: 25px;
  }
 }
+/* On huge screens we just left the space open */
+@media screen and (min-width: 1200px) {
+ main {
+   width: 1200px;
+   margin: 0 auto;
+  }
+  .container {
+    background-color: #5e5e5e;
+ }
+}
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {

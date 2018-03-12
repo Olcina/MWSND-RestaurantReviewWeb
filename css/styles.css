@@ -172,70 +172,12 @@ select {
 .building::after {
   content: '\1F3D8'
 }
-/* On medium screens the filter has rows */
-@media screen and (min-width: 650px) and (max-width: 950px) {
-  .filter-options {
-    display: flex;
-    flex-flow: row wrap;
-    align-content: space-around;
-  }
-  .filter-options h2 {
-    flex: 1 100%;
-  }
-  .select {
-    flex: 1 40%; 
-    margin-left: 15px;
-    margin-right: 15px;
-  }
-    .select.pan {
-      margin-left: 0;
-    }
-    
-  }
-/* On larges screens the filter merge wiht the map */
-@media screen and (min-width: 950px) {
-.header-container {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-}
-.map-wrap{
-  /* width: 450px; */
-  flex: 1 0px;
-}
- .filter-wrap{
-   flex: 1;
-  }
-  .filter-options {
-    height: 400px;
-    
- }
- .world-map::after {
-   content: '\1F5FA';
-   width: 100px;
-   height: 100px;
-   color: black;
-   font-size: 100pt;
- }
- .world-map {
-   padding-bottom: 25px;
- }
-}
-/* On huge screens we just left the space open */
-@media screen and (min-width: 1200px) {
- main {
-   width: 1200px;
-   margin: 0 auto;
-  }
-  .container {
-    background-color: #5e5e5e;
- }
-}
+
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   padding: 0;
   background-color: #f3f3f3;
   list-style: outside none none;
@@ -243,6 +185,7 @@ select {
 }
 #restaurants-list li {
   width: 90%;
+  max-width: 330px;
   background-color: #fff;
   border: 2px solid #ccc;
   font-family: Arial,sans-serif;
@@ -371,4 +314,63 @@ select {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/* On medium screens the filter has rows */
+@media screen and (min-width: 650px) and (max-width: 950px) {
+  .filter-options {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-around;
+  }
+  .filter-options h2 {
+    flex: 1 100%;
+  }
+  .select {
+    flex: 1 40%; 
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+    .select.pan {
+      margin-left: 0;
+    }
+    
+  }
+/* On larges screens the filter merge wiht the map */
+@media screen and (min-width: 950px) {
+  .header-container {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+  }
+  .map-wrap{
+    /* width: 450px; */
+    flex: 1 0px;
+  }
+ .filter-wrap{
+   flex: 1;
+  }
+  .filter-options {
+    height: 400px;  
+ }
+ .world-map::after {
+   content: '\1F5FA';
+   width: 100px;
+   height: 100px;
+   color: black;
+   font-size: 100pt;
+ }
+ .world-map {
+   padding-bottom: 25px;
+ }
+}
+/* On huge screens we just left the space open */
+@media screen and (min-width: 1200px) {
+ main {
+   width: 1200px;
+   margin: 0 auto;
+  }
+  .container {
+    background-color: #5e5e5e;
+ }
 }

@@ -66,19 +66,7 @@
 
 <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
 <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js').then(function (registration) {
-          // Registration was successful
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function (err) {
-          // registration failed :(
-          console.log('ServiceWorker registration failed: ', err);
-        });
-      });
-}
-</script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV8VC8BWYU7wHeYJay3_iplre4HZg7ywg&libraries=places&callback=initMap"></script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8TrVPPEWa3dOf6A84Y1m-GN3WwdPWsnI&libraries=places&callback=initMap"></script>
 
 </html>

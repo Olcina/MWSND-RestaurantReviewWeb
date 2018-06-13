@@ -1,20 +1,7 @@
 
 const cache_name = 'restaurant-cache-v1'
 
-self.addEventListener('install', function (event) {
-    let urlsToCache = [
-        '/css/styles.css',
-        '/index.html'
-    ]
-
-    event.waitUntil(
-        caches.open(cache_name).then(cache =>{
-           return cache.addAll(urlsToCache);
-        })
-    )
-})
-
-    
+// add all request data to the cache 
 self.addEventListener('fetch', function (event) {
     event.respondWith(
         // match the request in any cache stored

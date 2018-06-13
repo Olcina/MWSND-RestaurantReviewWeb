@@ -29,8 +29,8 @@
   <!-- Beginning main -->
   <main id="maincontent">
     <!-- Beginning map -->
-    <section id="map-container">
-      <div id="map"></div>
+    <section id="map-container" tabIndex="-1">
+      <div id="map" tabIndex="-1"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
@@ -42,8 +42,8 @@
         <p id="restaurant-cuisine"></p>
       </div>
       <div class="restaurant-timetable">
-        <p id="restaurant-address"></p>
-        <table id="restaurant-hours"></table>
+        <p id="restaurant-address" aria-label="restaurant address"></p>
+        <table id="restaurant-hours" aria-label="restaurant timetable"></table>
       </div>
     </section>
     <!-- end restaurant -->

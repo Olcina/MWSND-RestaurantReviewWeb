@@ -33,6 +33,8 @@ fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL'
     callback(error, null);
   } else {
+
+    
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
@@ -44,6 +46,7 @@ fetchRestaurantFromURL = (callback) => {
     });
   }
 }
+
 
 /**
  * Create restaurant HTML and add it to the webpage
@@ -58,13 +61,16 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.alt = restaurant.name;
-  image.srcset=`${DBHelper.imageUrlForRestaurant(restaurant,'360w')},
-                ${DBHelper.imageUrlForRestaurant(restaurant,'480w')},
-                ${DBHelper.imageUrlForRestaurant(restaurant,'800w')}`
+  image.srcset=`${DBHelper.imageUrlForRestaurant(restaurant,'360w')}.jpg,
+                ${DBHelper.imageUrlForRestaurant(restaurant,'480w')}.jpg,
+                ${DBHelper.imageUrlForRestaurant(restaurant,'800w')}.jpg`
+
   image.sizes = `(max-width: 320px) 280px,
-                  (max-width: 480px) 440px,
-                  800px`
+  (max-width: 480px) 440px,
+  800px`
   image.src = DBHelper.imageUrlForRestaurant(restaurant, '800w');
+
+  console.log(DBHelper.imageUrlForRestaurant(restaurant, '800w'));
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

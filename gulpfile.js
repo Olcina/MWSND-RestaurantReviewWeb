@@ -23,6 +23,8 @@ gulp.task('server:restart', function() {
 
 gulp.task('watch', function() {
     gulp.watch(['js/idb.js'], ['webpack'])
+    gulp.watch(['js/**.js'], ['server:restart'])
+    gulp.watch(['index.js'], ['server:restart'])
 
 })
 

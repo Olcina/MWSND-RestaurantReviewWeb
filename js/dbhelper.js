@@ -1,8 +1,9 @@
-/**
+
+ /**
  * Common database helper functions.
  */
 class DBHelper {
-
+  
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -17,7 +18,10 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     fetch(`http://localhost:1337/restaurants`).then(function (res) {
+      var res2 = res.clone()
+      console.log(res2.json())
       res.json()
+      
         .then(restaurants => callback(null, restaurants))
         .catch(error => callback(error, null))
     })
@@ -28,6 +32,22 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
+      // clone the response and add it to the idb
+      var res2 = res.clone()
+      res2.json().then(restaurant => {
+
+        dbPromise.then(function (db) {
+          var tx = db.transaction('restaurants', 'readwrite');
+          var restaurantsStore = tx.objectStore('restaurants');
+          console.log(restaurant)
+          restaurantsStore.put(restaurant);
+          return tx.complete;
+        }).then(function () {
+          console.log('added value');
+  
+        })
+      })
+      // put the restaurant in the idb
       res.json()
         .then(restaurant => callback(null, restaurant))
         .catch(error => callback('Restaurant does not exist', null))

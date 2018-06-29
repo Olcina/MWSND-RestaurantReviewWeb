@@ -4,6 +4,7 @@ import idb from 'idb';
 //     upgradeDB.createObjectStore('keyval')
 // });
 
+
 // open an put a value on the db
 let dbPromise = idb.open('test-db', 3 , upgradeDB => {
     switch (upgradeDB.oldVersion) {

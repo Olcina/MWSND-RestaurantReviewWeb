@@ -18,8 +18,7 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     fetch(`http://localhost:1337/restaurants`).then(function (res) {
-      var res2 = res.clone()
-      console.log(res2.json())
+      // fetch all restaurant to db on the start
       res.json()
       
         .then(restaurants => callback(null, restaurants))

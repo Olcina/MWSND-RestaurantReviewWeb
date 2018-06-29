@@ -1,6 +1,4 @@
-let restaurants,
-  neighborhoods,
-  cuisines
+let restaurants,neighborhoods,cuisines
 var map
 var markers = []
 
@@ -38,6 +36,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
     select.append(option);
   });
 }
+
 
 /**
  * Fetch all cuisines and set their HTML.

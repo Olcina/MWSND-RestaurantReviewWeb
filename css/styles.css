@@ -1,3 +1,5 @@
+
+
 @charset "utf-8";
 /* CSS Document */
 html,body {
@@ -24,7 +26,7 @@ a {
 	text-decoration: none;
 }
 a:hover, a:focus {
-	color: #3397db;
+	color: #0062b7;
 	text-decoration: none;
 }
 a img{
@@ -44,7 +46,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 #footer {
   background-color: #444;
-  color: #aaa;
+  color: #bbb;
   font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
@@ -91,7 +93,7 @@ nav h1 a {
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #0275d8;
+    color: #0062b7;
     text-decoration: none;
 }
 
@@ -119,7 +121,7 @@ nav h1 a {
   margin: 0;
   flex: 1;
   width: 100%;
-  color: white;
+  color: black;
   font-weight: 200;
   letter-spacing: 5px;
   font-family: Arial, Helvetica, sans-serif;
@@ -138,7 +140,7 @@ select {
   padding-left: 5%;
   border: 0 !important;
   background: #6789aa;
-  color: white;
+  color: black;
   cursor: pointer;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16pt;
@@ -205,7 +207,7 @@ select {
   border-radius: 15px 0 0 0;
 }
 #restaurants-list li h1 {
-  color: #f18200;
+  color: #bb8200;
   align-self: center;
   font-family: Arial,sans-serif;
   font-size: 18pt;
@@ -222,7 +224,7 @@ select {
 #restaurants-list li a {
   background-color: orange;
   border-radius: 0 0 15px 0;
-  color: #fff;
+  color: black;
   display: inline-block;
   font-size: 16pt;
   margin: 5px 0 0 0;
@@ -255,7 +257,7 @@ select {
   width: 50%;
 } */
 #restaurant-name {
-  color: #f18200;
+  color: #bb8200;
   font-family: Arial,sans-serif;
   font-size: 20pt;
   font-weight: 200;
@@ -315,7 +317,7 @@ select {
 }
 
 #reviews-container h2 {
-  color: #f58500;
+  color: #bb8200;
   font-size: 24pt;
   font-weight: 300;
   text-transform: uppercase;

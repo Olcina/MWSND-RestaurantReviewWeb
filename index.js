@@ -14,6 +14,7 @@ app.get('/db-test', (req,res) => {
 })
 
 app.use(express.static(__dirname + '/css'));
+app.use(express.static(__dirname + '/icons'));
 
 // serving all files trought static file
 app.use(express.static(__dirname))

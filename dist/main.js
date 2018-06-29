@@ -315,7 +315,7 @@
     }
 }());
 // open an put a value on the db
-const dbPromise = idb.open('restaurant-db', 1, upgradeDB => {
+const restDB = idb.open('restaurant-db', 1, upgradeDB => {
     switch (upgradeDB.oldVersion) {
         case 0:
             let keyValStore = upgradeDB.createObjectStore('restaurants', {keyPath: 'id'})
@@ -361,25 +361,41 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
-      // clone the response and add it to the idb
-      var restaurant = res.clone()
+    // will try to fetch from restDB and if not exist then fetch from the network
+    restDB.then(db => {
+      let tx = db.transaction('restaurants');
+      let restaurantsStore = tx.objectStore('restaurants');
+      console.log('id:',id)
+      
+      return restaurantsStore.getAll(parseInt(id));
+    }).then( response => {
+      // when db response has a value response with that value
+      if (response.length>0) {
+        console.log('restaurant fetch from idb:', response)
+        return callback(null, response[0])
+      }else {
+        console.log('fetch the restaurant with the id:', id, ' and added to the db')
+        fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
+          // clone the response and add it to the idb
+          // let res2 = res.clone()
+          res.json().then(restaurant => {
+    
+            restDB.then(function (db) {
+              let tx = db.transaction('restaurants', 'readwrite');
+              let restaurantsStore = tx.objectStore('restaurants');
+              console.log(restaurant)
+              restaurantsStore.put(restaurant);
+              return tx.complete;
+            }).then(function () {
+              return callback(null, restaurant)
+              }).catch(error => callback('Restaurant does not exist', null))
+          }).catch(error => callback('Restaurant does not exist', null))
 
-      // put the restaurant in the idb
-      dbPromise.then(function (db) {
-        var tx = db.transaction('restaurants', 'readwrite');
-        var restaurantsStore = tx.objectStore('restaurants');
-        restaurantsStore.put(restaurant);
-        console.log(restaurant)
-        return tx.complete;
-      }).then(function () {
-        console.log('added value');
-
-      })
-      res.json()
-        .then(restaurant => callback(null, restaurant))
-        .catch(error => callback('Restaurant does not exist', null))
+        }).catch(error => callback('there was an error', null))
+      }
     })
+
+
   }
 
   /**
@@ -501,8 +517,6 @@ class DBHelper {
 
 }
 
-
-
 let restaurants,neighborhoods,cuisines
 var map
 var markers = []
@@ -518,7 +532,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 /**
  * Fetch all neighborhoods and set their HTML.
  */
-fetchNeighborhoods = () => {
+const fetchNeighborhoods = () => {
   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) { // Got an error
       console.error(error);
@@ -532,7 +546,7 @@ fetchNeighborhoods = () => {
 /**
  * Set neighborhoods HTML.
  */
-fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
+const fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement('option');
@@ -546,7 +560,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 /**
  * Fetch all cuisines and set their HTML.
  */
-fetchCuisines = () => {
+const fetchCuisines = () => {
   DBHelper.fetchCuisines((error, cuisines) => {
     if (error) { // Got an error!
       console.error(error);
@@ -560,7 +574,7 @@ fetchCuisines = () => {
 /**
  * Set cuisines HTML.
  */
-fillCuisinesHTML = (cuisines = self.cuisines) => {
+const fillCuisinesHTML = (cuisines = self.cuisines) => {
   const select = document.getElementById('cuisines-select');
 
   cuisines.forEach(cuisine => {
@@ -590,7 +604,7 @@ window.initMap = () => {
 /**
  * Update page and map for current restaurants.
  */
-updateRestaurants = () => {
+const updateRestaurants = () => {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
@@ -613,7 +627,7 @@ updateRestaurants = () => {
 /**
  * Clear current restaurants, their HTML and remove their map markers.
  */
-resetRestaurants = (restaurants) => {
+const resetRestaurants = (restaurants) => {
   // Remove all restaurants
   self.restaurants = [];
   const ul = document.getElementById('restaurants-list');
@@ -628,7 +642,7 @@ resetRestaurants = (restaurants) => {
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
-fillRestaurantsHTML = (restaurants = self.restaurants) => {
+const fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
@@ -639,7 +653,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = (restaurant) => {
+const createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
   const image = document.createElement('img');
@@ -679,7 +693,7 @@ createRestaurantHTML = (restaurant) => {
 /**
  * Add markers for current restaurants to the map.
  */
-addMarkersToMap = (restaurants = self.restaurants) => {
+const addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);

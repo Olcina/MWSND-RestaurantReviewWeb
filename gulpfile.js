@@ -1,6 +1,9 @@
 const gulp = require('gulp');
 const gutil = require('gulp-util')
 const concat = require('gulp-concat');
+var gzip = require('gulp-gzip');
+
+
 const developServer = require('gulp-develop-server');
 const webpack = require("webpack");
 const path = require('path');
@@ -30,7 +33,6 @@ gulp.task('watch', function() {
     gulp.watch(['index.js'], ['server:restart'])
 
 })
-
 
 
 gulp.task('script-main', function () {
@@ -86,5 +88,5 @@ gulp.task("webpack", function (callback) {
 
 // Concatenation of the build process to make it available into npm
 gulp.task('serve', function (callback) {
-    runSequence('server:start', 'webpack','script-main', 'script-restaurant','watch', callback);
+    runSequence('server:start', 'webpack', 'script-main', 'script-restaurant', 'watch', callback);
 });

@@ -8,9 +8,14 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "gulp": "gulp serve"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-develop-server": "^0.5.2",
+    "gulp-util": "^3.0.8",
+    "run-sequence": "^2.2.1",
     "webpack": "^4.1.1",
     "webpack-cli": "^3.0.8"
   },

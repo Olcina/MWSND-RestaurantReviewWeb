@@ -8,3 +8,12 @@ let dbPromise = idb.open('test-db', 1 , upgradeDB => {
     let keyValStore = upgradeDB.createObjectStore('keyval')
     keyValStore.put('TestValue','key');
 })
+
+
+
+dbPromise.then(function (db) {
+    var tx = db.transaction('keyval');
+    var keyValStore = tx.objectStore('keyval')
+    return keyValStore.get('key');
+}).then(val => console.log(val))
+

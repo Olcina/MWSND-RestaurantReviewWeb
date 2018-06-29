@@ -1,5 +1,5 @@
 // open an put a value on the db
-const dbPromise = idb.open('restaurant-db', 1, upgradeDB => {
+const restDB = idb.open('restaurant-db', 1, upgradeDB => {
     switch (upgradeDB.oldVersion) {
         case 0:
             let keyValStore = upgradeDB.createObjectStore('restaurants', {keyPath: 'id'})

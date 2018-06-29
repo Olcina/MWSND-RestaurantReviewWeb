@@ -315,7 +315,7 @@
     }
 }());
 // open an put a value on the db
-const dbPromise = idb.open('restaurant-db', 1, upgradeDB => {
+const restDB = idb.open('restaurant-db', 1, upgradeDB => {
     switch (upgradeDB.oldVersion) {
         case 0:
             let keyValStore = upgradeDB.createObjectStore('restaurants', {keyPath: 'id'})
@@ -361,27 +361,41 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
-      // clone the response and add it to the idb
-      var res2 = res.clone()
-      res2.json().then(restaurant => {
+    // will try to fetch from restDB and if not exist then fetch from the network
+    restDB.then(db => {
+      let tx = db.transaction('restaurants');
+      let restaurantsStore = tx.objectStore('restaurants');
+      console.log('id:',id)
+      
+      return restaurantsStore.getAll(parseInt(id));
+    }).then( response => {
+      // when db response has a value response with that value
+      if (response.length>0) {
+        console.log('restaurant fetch from idb:', response)
+        return callback(null, response[0])
+      }else {
+        console.log('fetch the restaurant with the id:', id, ' and added to the db')
+        fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
+          // clone the response and add it to the idb
+          // let res2 = res.clone()
+          res.json().then(restaurant => {
+    
+            restDB.then(function (db) {
+              let tx = db.transaction('restaurants', 'readwrite');
+              let restaurantsStore = tx.objectStore('restaurants');
+              console.log(restaurant)
+              restaurantsStore.put(restaurant);
+              return tx.complete;
+            }).then(function () {
+              return callback(null, restaurant)
+              }).catch(error => callback('Restaurant does not exist', null))
+          }).catch(error => callback('Restaurant does not exist', null))
 
-        dbPromise.then(function (db) {
-          var tx = db.transaction('restaurants', 'readwrite');
-          var restaurantsStore = tx.objectStore('restaurants');
-          console.log(restaurant)
-          restaurantsStore.put(restaurant);
-          return tx.complete;
-        }).then(function () {
-          console.log('added value');
-  
-        })
-      })
-      // put the restaurant in the idb
-      res.json()
-        .then(restaurant => callback(null, restaurant))
-        .catch(error => callback('Restaurant does not exist', null))
+        }).catch(error => callback('there was an error', null))
+      }
     })
+
+
   }
 
   /**

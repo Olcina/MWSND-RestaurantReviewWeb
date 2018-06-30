@@ -17,13 +17,27 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(`http://localhost:1337/restaurants`).then(function (res) {
-      // fetch all restaurant to db on the start
-      res.json()
-      
-        .then(restaurants => callback(null, restaurants))
-        .catch(error => callback(error, null))
-    })
+    // try to fetch fro db fetch if no results
+    restDB.then(dv => {
+      let tx = db.transaction('restaurants');
+      let restaurantsStore = tx.objectStore('restaurants');
+      return restaurantsStore.getAll()
+    }).then( response => {
+      if (response.length > 0) {
+        console.log('restaurants fetch from idb:', response)
+        return callback(null, response)
+      } else {
+        fetch(`http://localhost:1337/restaurants`).then(function (res) {
+          // fetch all restaurant to db on the start
+          res.json()
+
+            .then(restaurants => callback(null, restaurants))
+            .catch(error => callback(error, null))
+        })
+      }
+    }).catch(error => callback('there was an error', null))
+
+    
   }
 
   /**

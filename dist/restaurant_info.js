@@ -329,12 +329,12 @@ const restDB = idb.open('restaurant-db', 1, upgradeDB => {
                             // console.log('restaurant', restaurant)
                             let item = restaurant;
                             restDB.then(function (db,restaurant) {
-                                console.log('db',item)
+                                
                                 var tx = db.transaction('restaurants', 'readwrite');
                                 var restaurantsStore = tx.objectStore('restaurants')
                                 restaurantsStore.put(item);
                                 return tx.complete;
-                            }).then(val => console.log('restaurant added',val))
+                            })
                         });
                     })
                     .catch(error => console.log(error))
@@ -369,13 +369,33 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(`http://localhost:1337/restaurants`).then(function (res) {
-      // fetch all restaurant to db on the start
-      res.json()
+    // try to fetch fro db fetch if no results
+    restDB.then(db => {
+      let tx = db.transaction('restaurants');
+      let restaurantsStore = tx.objectStore('restaurants');
       
-        .then(restaurants => callback(null, restaurants))
-        .catch(error => callback(error, null))
-    })
+      
+      return restaurantsStore.getAll()
+    }).then( response => {
+      
+      if (response.length > 0) {
+        console.log('fetch from DB');
+        
+        return callback(null, response)
+      } else {
+        console.log('fetch from network');
+        
+        fetch(`http://localhost:1337/restaurants`).then(function (res) {
+          
+          res.json()
+
+            .then(restaurants => callback(null, restaurants))
+            .catch(error => callback(error, null))
+        })
+      }
+    }).catch(error => callback('there was an error', null))
+
+    
   }
 
   /**
@@ -386,16 +406,15 @@ class DBHelper {
     restDB.then(db => {
       let tx = db.transaction('restaurants');
       let restaurantsStore = tx.objectStore('restaurants');
-      console.log('id:',id)
       
       return restaurantsStore.getAll(parseInt(id));
     }).then( response => {
       // when db response has a value response with that value
       if (response.length>0) {
-        console.log('restaurant fetch from idb:', response)
+        console.log('restaurant', response[0].name, ' fetched from DB' );
+        
         return callback(null, response[0])
       }else {
-        console.log('fetch the restaurant with the id:', id, ' and added to the db')
         fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
           // clone the response and add it to the idb
           // let res2 = res.clone()
@@ -404,7 +423,7 @@ class DBHelper {
             restDB.then(function (db) {
               let tx = db.transaction('restaurants', 'readwrite');
               let restaurantsStore = tx.objectStore('restaurants');
-              console.log(restaurant)
+
               restaurantsStore.put(restaurant);
               return tx.complete;
             }).then(function () {

@@ -18,17 +18,23 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     // try to fetch fro db fetch if no results
-    restDB.then(dv => {
+    restDB.then(db => {
       let tx = db.transaction('restaurants');
       let restaurantsStore = tx.objectStore('restaurants');
+      
+      
       return restaurantsStore.getAll()
     }).then( response => {
+      
       if (response.length > 0) {
-        console.log('restaurants fetch from idb:', response)
+        console.log('fetch from DB');
+        
         return callback(null, response)
       } else {
+        console.log('fetch from network');
+        
         fetch(`http://localhost:1337/restaurants`).then(function (res) {
-          // fetch all restaurant to db on the start
+          
           res.json()
 
             .then(restaurants => callback(null, restaurants))
@@ -48,16 +54,15 @@ class DBHelper {
     restDB.then(db => {
       let tx = db.transaction('restaurants');
       let restaurantsStore = tx.objectStore('restaurants');
-      console.log('id:',id)
       
       return restaurantsStore.getAll(parseInt(id));
     }).then( response => {
       // when db response has a value response with that value
       if (response.length>0) {
-        console.log('restaurant fetch from idb:', response)
+        console.log('restaurant', response[0].name, ' fetched from DB' );
+        
         return callback(null, response[0])
       }else {
-        console.log('fetch the restaurant with the id:', id, ' and added to the db')
         fetch(`http://localhost:1337/restaurants/${id}`).then(function (res) {
           // clone the response and add it to the idb
           // let res2 = res.clone()
@@ -66,7 +71,7 @@ class DBHelper {
             restDB.then(function (db) {
               let tx = db.transaction('restaurants', 'readwrite');
               let restaurantsStore = tx.objectStore('restaurants');
-              console.log(restaurant)
+
               restaurantsStore.put(restaurant);
               return tx.complete;
             }).then(function () {

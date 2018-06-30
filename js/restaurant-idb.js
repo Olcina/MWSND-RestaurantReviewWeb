@@ -13,12 +13,12 @@ const restDB = idb.open('restaurant-db', 1, upgradeDB => {
                             // console.log('restaurant', restaurant)
                             let item = restaurant;
                             restDB.then(function (db,restaurant) {
-                                console.log('db',item)
+                                
                                 var tx = db.transaction('restaurants', 'readwrite');
                                 var restaurantsStore = tx.objectStore('restaurants')
                                 restaurantsStore.put(item);
                                 return tx.complete;
-                            }).then(val => console.log('restaurant added',val))
+                            })
                         });
                     })
                     .catch(error => console.log(error))

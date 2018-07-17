@@ -1,5 +1,5 @@
 // open an put a value on the db
-const restDB = idb.open('restaurant-db', 1, upgradeDB => {
+const restDB = idb.open('restaurant-db', 2, upgradeDB => {
     switch (upgradeDB.oldVersion) {
         case 0:
             upgradeDB.createObjectStore('restaurants', {keyPath: 'id'})
@@ -23,8 +23,24 @@ const restDB = idb.open('restaurant-db', 1, upgradeDB => {
                     })
                     .catch(error => console.log(error))
             })
-        // case 1:
-        //     upgradeDB.createObjectStore('people', { keyPath: 'name' });
+        case 1:
+            upgradeDB.createObjectStore('reviews', { keyPath: 'id' });
+
+            fetch(`http://localhost:1337/reviews`).then(function (res) {
+                res.json()
+                    .then(reviews => {
+                        reviews.forEach(review => {
+                            let item = review;
+                            restDB.then(function(db,review) {
+                                var tx = db.transaction('reviews', 'readwrite');
+                                var reviewsStore = tx.objectStore('reviews');
+                                reviewsStore.put(item);
+                                return tx.complete;
+                            })
+                        })
+                    })
+                
+            })
         // case 2:
         //     let peopleStore = upgradeDB.transaction.objectStore('people');
         //     peopleStore.createIndex('age', 'age');

@@ -89,14 +89,34 @@ class DBHelper {
    * Fetch reviews for a restaurant by its ID.
    */
   static fetchRestaurantReviewsById(id, callback) {
-   
-    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
-      // console.log('res.json());
-      return res.json()
-    }).then(function (myJson) {
-      console.log(myJson);
-      return myJson
-    });
+    console.log('fetchRestaurantReview');
+    
+    return restDB.then(db => {
+      let tx = db.transaction('reviews');
+      let reviewsStore = tx.objectStore('reviews');
+
+      let raw_reviews = reviewsStore.getAll()
+    
+      return raw_reviews
+    }).then(response => {
+      let reviews = response.filter(review => review.restaurant_id == id)
+      if (reviews.length > 0) {
+        console.log('reviews feched from restDB', reviews)
+        return reviews
+
+      } else {
+        // fetch from network
+        return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
+          // console.log('res.json());
+          return res.json()
+        }).then(function (myJson) {
+          console.log(myJson);
+          return myJson
+        });
+      }
+    })
+
+
   
 
 

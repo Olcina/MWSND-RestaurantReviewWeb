@@ -1,6 +1,6 @@
 let restaurant;
 var map;
-
+let is_favorite;
 /**
  * Initialize Google map, called from HTML.
  */
@@ -44,6 +44,10 @@ const fetchRestaurantFromURL = (callback) => {
       console.log('restaurant', restaurant, reviews);
       reviews.then(data => {
         self.restaurant.reviews = data
+        console.log('is_favorite? ',self.restaurant);
+        is_favorite = self.restaurant.is_favorite
+        toggleAnimation() 
+        
         if (!restaurant) {
           console.error(error);
           return;

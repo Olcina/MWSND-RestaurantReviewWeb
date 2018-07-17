@@ -75,8 +75,14 @@ form.onsubmit = function (event) {
     }
 
     postData(`http://localhost:1337/reviews/`, data)
-        .then(data => console.log('data got trough', data)) // JSON from `response.json()` call
+        .then(data => {
+            console.log('data got trough', data)
+            const ul = document.getElementById('reviews-list');
+            ul.appendChild(createReviewHTML(data));
+
+        }) // JSON from `response.json()` call
         .catch(error => console.error(error));
+
 
     modal.style.display = "none"
 

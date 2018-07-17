@@ -437,6 +437,22 @@ class DBHelper {
 
 
   }
+  /**
+   * Fetch reviews for a restaurant by its ID.
+   */
+  static fetchRestaurantReviewsById(id, callback) {
+   
+    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
+      // console.log('res.json());
+      return res.json()
+    }).then(function (myJson) {
+      console.log(myJson);
+      return myJson
+    });
+  
+
+
+  }
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
@@ -533,6 +549,12 @@ class DBHelper {
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }
+  /**
+   * Review page URL.
+   */
+  static urlForRestaurantReviews(restaurant) {
+    return (`http://localhost:1337/reviews/?restaurant_id=${restaurant.id}`);
+  }
 
   /**
    * Restaurant image URL.
@@ -597,12 +619,19 @@ const fetchRestaurantFromURL = (callback) => {
     
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
-      if (!restaurant) {
-        console.error(error);
-        return;
-      }
-      fillRestaurantHTML();
-      callback(null, restaurant)
+      // get the reviews
+      const reviews = DBHelper.fetchRestaurantReviewsById(id)
+      
+      console.log('restaurant', restaurant, reviews);
+      reviews.then(data => {
+        self.restaurant.reviews = data
+        if (!restaurant) {
+          console.error(error);
+          return;
+        }
+        fillRestaurantHTML();
+        callback(null, restaurant)
+      })
     });
   }
 }
@@ -640,7 +669,9 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+
+  // fetch reviews and appendit to the restaurant
+    fillReviewsHTML();
 }
 
 /**
@@ -667,6 +698,7 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
  * Create all reviews HTML and add them to the webpage.
  */
 const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -695,7 +727,13 @@ const createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  var review_date = new Date(review.updatedAt);
+  const day = review_date.getDate()
+  const month = review_date.getMonth()
+  const year = review_date.getFullYear()
+  
+  
+  date.innerHTML = `${day}/${month}/${year}`;
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -735,4 +773,88 @@ const getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+'use strict';
+
+// Modal behavior
+let openModalBtn = document.getElementById('open-review-form');
+let closeModalBtn = document.getElementById('close-review-form');
+let modal = document.getElementById('modal')
+
+
+openModalBtn.onclick = function () {
+    let modal = document.getElementById('modal');
+    console.log('open modal');
+
+    modal.style.display = "block"
+}
+closeModalBtn.onclick = function () {
+    let modal = document.getElementById('modal');
+    console.log('close modal');
+
+    modal.style.display = "none"
+}
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+const postData = (url = ``, data = {}) => {
+    // Default options are marked with *
+    return fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "reload", // *default, no-cache, reload, force-cache, only-if-cached
+        // credentials: "same-origin", // include, same-origin, *omit
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        // redirect: "follow", // manual, *follow, error
+        // referrer: "no-referrer", // no-referrer, *client
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+        .then(response => response.json()) // parses response to JSON
+        .catch(error => console.error(`Fetch Error =\n`, error));
+};
+
+// Review form behavior
+let form = document.getElementById('modal')
+
+form.onsubmit = function (event) {
+    // prevent default
+    event.preventDefault()
+    // get restaurant id from url parameter
+    const rest_id = parseInt(getParameterByName('id'));
+    // get data from modal
+    let rating_value = 1
+    // form inputs
+    const ratings = document.getElementsByName('rating')
+    const name = document.getElementsByName('name')[0].value
+    const review_text = document.getElementsByName('review')[0].value
+    // extract selected rating
+    ratings.forEach(rating => {
+        if (rating.checked) {
+            rating_value = parseInt(rating.value)
+        }
+        
+    });
+    
+    const data = {
+        "restaurant_id": rest_id,
+        "name": name,
+        "rating": rating_value,
+        "comments": review_text
+    }
+
+    postData(`http://localhost:1337/reviews/`, data)
+        .then(data => console.log('data got trough', data)) // JSON from `response.json()` call
+        .catch(error => console.error(error));
+
+    modal.style.display = "none"
+
 }

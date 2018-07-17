@@ -437,6 +437,24 @@ class DBHelper {
 
 
   }
+  /**
+   * Fetch reviews for a restaurant by its ID.
+   */
+  static fetchRestaurantReviewsById(id, callback) {
+   
+    fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
+      // console.log('res.json());
+      res.json().then(function(reviews) {
+        console.log('reviews', reviews);
+        
+        return callback(null, reviews)
+      })
+        
+    }).catch(error => callback('Restaurant has no reviews', null))
+  
+
+
+  }
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
@@ -532,6 +550,12 @@ class DBHelper {
    */
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
+  }
+  /**
+   * Review page URL.
+   */
+  static urlForRestaurantReviews(restaurant) {
+    return (`http://localhost:1337/reviews/?restaurant_id=${restaurant.id}`);
   }
 
   /**

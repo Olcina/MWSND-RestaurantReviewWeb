@@ -26,6 +26,8 @@ gulp.task('server:restart', function() {
 
 gulp.task('watch', function() {
     gulp.watch(['js/idb.js'], ['webpack'])
+    gulp.watch(['js/restaurant_info.js'], ['script-restaurant'])
+    gulp.watch(['js/review_form.js'], ['script-restaurant'])
    
     gulp.watch(['js/*.js'], function() {
             runSequence['script-main','script-restaurant']
@@ -41,7 +43,11 @@ gulp.task('script-main', function () {
         .pipe(gulp.dest('./dist/'));
 });
 gulp.task('script-restaurant', function () {
-    return gulp.src(['js/idb-lib.js','js/restaurant-idb.js', 'js/dbhelper.js', 'js/restaurant_info.js'])
+    return gulp.src(['js/idb-lib.js',
+                     'js/restaurant-idb.js',
+                     'js/dbhelper.js',
+                     'js/restaurant_info.js',
+                     'js/review_form.js'])
         .pipe(concat('restaurant_info.js'))
         .pipe(gulp.dest('./dist/'));
 });

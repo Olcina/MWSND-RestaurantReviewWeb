@@ -1,4 +1,21 @@
 'use strict';
+// toggle favourite
+let togglefavorite = document.getElementById('toggle-favourite')
+let is_favorite = false;
+togglefavorite.onclick = function(event) {
+    if(is_favorite) {
+        console.log('I love this restaurant');
+        togglefavorite.style.backgroundColor = 'green'
+        
+    } else {
+        console.log('I hate this restaurant');
+        togglefavorite.style.backgroundColor = 'red'
+
+    }
+    // toggle value`
+    is_favorite = !is_favorite
+}
+
 
 // Modal behavior
 let openModalBtn = document.getElementById('open-review-form');

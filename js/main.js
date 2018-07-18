@@ -137,6 +137,12 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
 const createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  if (restaurant.is_favorite) {
+    const but = document.createElement('span');
+    but.className = 'restaurant-toggle-like'
+    but.innerHTML= '&#9829;'
+    li.append(but)
+  }
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.alt = restaurant.name;

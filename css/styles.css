@@ -484,3 +484,16 @@ select {
   background-color: white;
 }
 
+
+/* main toggle like button*/
+.restaurant-toggle-like {
+    position: absolute;
+    /*width: 20px;
+    height: 20px;*/
+    font-size: 3em;
+    border-radius: 10px 0;
+    padding: 0 12px;
+    border: none;
+    color: goldenrod;
+    background-color: black;
+}

@@ -28,10 +28,7 @@ gulp.task('watch', function() {
     gulp.watch(['js/idb.js'], ['webpack'])
     gulp.watch(['js/restaurant_info.js'], ['script-restaurant'])
     gulp.watch(['js/*.js'], ['script-restaurant'])
-   
-    gulp.watch(['js/*.js'], function() {
-            runSequence['script-main','script-restaurant']
-            })
+    gulp.watch(['js/*.js'], ['script-main'])
     gulp.watch(['index.js'], ['server:restart'])
 
 })

@@ -1,9 +1,11 @@
 'use strict';
 // toggle favourite
 let togglefavorite = document.getElementById('toggle-favourite')
+
 // let is_favorite = false;
 togglefavorite.onclick = function(event) {
     const rest_id = parseInt(getParameterByName('id'));
+    
     if(is_favorite) {
         putData(`http://localhost:1337/restaurants/${rest_id}`, { is_favorite: is_favorite }).then(
             response =>
@@ -64,13 +66,20 @@ togglefavorite.onclick = function(event) {
 
 function toggleAnimation() {
     if (is_favorite) {
-        togglefavorite.style.backgroundColor = 'green';
         document.getElementById('is-favorite-message').innerText = 'Remove from favorites!'
     } else {
-        togglefavorite.style.backgroundColor = 'red'
         document.getElementById('is-favorite-message').innerText = 'Add to favorites!     '
     }
+    if (is_favorite) {
+        console.log('checked true');
+
+        togglefavorite.checked = true;
+    } else {
+        console.log('checked false');
+        togglefavorite.checked = false;
+    }
 }
+toggleAnimation()
 
 // Modal behavior
 let openModalBtn = document.getElementById('open-review-form');
@@ -95,6 +104,7 @@ window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
+
 }
 
 // TODO: postDATA and putDATA should add to the serviceworker quee for background sync

@@ -65,8 +65,10 @@ togglefavorite.onclick = function(event) {
 function toggleAnimation() {
     if (is_favorite) {
         togglefavorite.style.backgroundColor = 'green';
+        document.getElementById('is-favorite-message').innerText = 'Remove from favorites!'
     } else {
         togglefavorite.style.backgroundColor = 'red'
+        document.getElementById('is-favorite-message').innerText = 'Add to favorites!     '
     }
 }
 
@@ -75,13 +77,13 @@ let openModalBtn = document.getElementById('open-review-form');
 let closeModalBtn = document.getElementById('close-review-form');
 let modal = document.getElementById('modal')
 
+add_review.onclick = function () {
+        let modal = document.getElementById('modal');
+        console.log('open modal');
+    
+        modal.style.display = "block"
+    }
 
-openModalBtn.onclick = function () {
-    let modal = document.getElementById('modal');
-    console.log('open modal');
-
-    modal.style.display = "block"
-}
 closeModalBtn.onclick = function () {
     let modal = document.getElementById('modal');
     console.log('close modal');

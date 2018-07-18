@@ -43,18 +43,26 @@
       <div class="restaurant-badge">
 
         <img id="restaurant-img">
-        <p id="restaurant-cuisine"></p>
+        <p id="restaurant-cuisine"></p> 
+        <div class="favorite-toggle-div">
+          <p id="is-favorite-message" >Add to Favorites!</p>
+          <label class="switch">
+            <input id="toggle-favourite" name="toggle-favorite-restaurant" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+         
       </div>
       <div class="restaurant-timetable">
         <p id="restaurant-address" aria-label="restaurant address"></p>
         <table id="restaurant-hours" aria-label="restaurant timetable"></table>
       </div>
-      <button id="open-review-form" >Review Restaurant</button>
-      <button id="toggle-favourite" >Toggle Favourite</button>
+      
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
+      <!--<button id="open-review-form">Review Restaurant</button>-->
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
@@ -67,7 +75,7 @@
             <label for="name">Your name:</label>
             <input type="text" name="name">
 
-              <div id='start-rating' class="rating">
+              <fieldset id='start-rating' class="rating">
                 <span>
                   <input type="radio" name="rating" id="str1" value="1" checked>
                   <label for="str1"></label>
@@ -88,7 +96,7 @@
                   <input type="radio" name="rating" id="str5" value="5">
                   <label for="str5"></label>
                 </span>
-              </div>
+              </fieldset>
               <label for="review-text">Your review:</label>
               <input id='form-text' type="text" name="review" id="review-text">
               <input type="submit" value="submit">

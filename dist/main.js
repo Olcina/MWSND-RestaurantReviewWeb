@@ -315,7 +315,7 @@
     }
 }());
 // open an put a value on the db
-const restDB = idb.open('restaurant-db', 1, upgradeDB => {
+const restDB = idb.open('restaurant-db', 2, upgradeDB => {
     switch (upgradeDB.oldVersion) {
         case 0:
             upgradeDB.createObjectStore('restaurants', {keyPath: 'id'})
@@ -339,8 +339,24 @@ const restDB = idb.open('restaurant-db', 1, upgradeDB => {
                     })
                     .catch(error => console.log(error))
             })
-        // case 1:
-        //     upgradeDB.createObjectStore('people', { keyPath: 'name' });
+        case 1:
+            upgradeDB.createObjectStore('reviews', { keyPath: 'id' });
+
+            fetch(`http://localhost:1337/reviews`).then(function (res) {
+                res.json()
+                    .then(reviews => {
+                        reviews.forEach(review => {
+                            let item = review;
+                            restDB.then(function(db,review) {
+                                var tx = db.transaction('reviews', 'readwrite');
+                                var reviewsStore = tx.objectStore('reviews');
+                                reviewsStore.put(item);
+                                return tx.complete;
+                            })
+                        })
+                    })
+                
+            })
         // case 2:
         //     let peopleStore = upgradeDB.transaction.objectStore('people');
         //     peopleStore.createIndex('age', 'age');
@@ -441,16 +457,34 @@ class DBHelper {
    * Fetch reviews for a restaurant by its ID.
    */
   static fetchRestaurantReviewsById(id, callback) {
-   
-    fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
-      // console.log('res.json());
-      res.json().then(function(reviews) {
-        console.log('reviews', reviews);
-        
-        return callback(null, reviews)
-      })
-        
-    }).catch(error => callback('Restaurant has no reviews', null))
+    console.log('fetchRestaurantReview');
+    
+    return restDB.then(db => {
+      let tx = db.transaction('reviews');
+      let reviewsStore = tx.objectStore('reviews');
+
+      let raw_reviews = reviewsStore.getAll()
+    
+      return raw_reviews
+    }).then(response => {
+      let reviews = response.filter(review => review.restaurant_id == id)
+      if (reviews.length > 0) {
+        console.log('reviews feched from restDB', reviews)
+        return reviews
+
+      } else {
+        // fetch from network
+        return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
+          // console.log('res.json());
+          return res.json()
+        }).then(function (myJson) {
+          console.log(myJson);
+          return myJson
+        });
+      }
+    })
+
+
   
 
 

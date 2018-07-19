@@ -51,7 +51,7 @@ workbox.routing.registerRoute(
         cacheName: 'images-cache',
     })
 );
-// jpg
+// maps assets
 workbox.routing.registerRoute(
     new RegExp('.*\.(?:cur|woff2)'),
     workbox.strategies.staleWhileRevalidate({
@@ -59,13 +59,23 @@ workbox.routing.registerRoute(
     })
 );
 
-// workbox.precaching.precacheAndRoute([]);
+// create a queue of fetching request for user when is offline
+const queue = new workbox.backgroundSync.Queue('user-action-queue');
 
+self.addEventListener('fetch', (event) => {
+    // Clone the request to ensure it's save to read when
+    // adding to the Queue.
+    console.log('QUEUE FETCH', event);
+    
+    const promiseChain = fetch(event.request.clone())
+        .catch((err) => {
+            console.log(err);
+            
+            return queue.addRequest(event.request);
+        });
 
-
-
-
-
+    event.waitUntil(promiseChain);
+});
 
 
 // // cache name

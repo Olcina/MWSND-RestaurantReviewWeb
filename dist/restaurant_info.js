@@ -315,7 +315,7 @@
     }
 }());
 // open an put a value on the db
-const restDB = idb.open('restaurant-db', 1, upgradeDB => {
+const restDB = idb.open('restaurant-db', 2, upgradeDB => {
     switch (upgradeDB.oldVersion) {
         case 0:
             upgradeDB.createObjectStore('restaurants', {keyPath: 'id'})
@@ -339,8 +339,24 @@ const restDB = idb.open('restaurant-db', 1, upgradeDB => {
                     })
                     .catch(error => console.log(error))
             })
-        // case 1:
-        //     upgradeDB.createObjectStore('people', { keyPath: 'name' });
+        case 1:
+            upgradeDB.createObjectStore('reviews', { keyPath: 'id' });
+
+            fetch(`http://localhost:1337/reviews`).then(function (res) {
+                res.json()
+                    .then(reviews => {
+                        reviews.forEach(review => {
+                            let item = review;
+                            restDB.then(function(db,review) {
+                                var tx = db.transaction('reviews', 'readwrite');
+                                var reviewsStore = tx.objectStore('reviews');
+                                reviewsStore.put(item);
+                                return tx.complete;
+                            })
+                        })
+                    })
+                
+            })
         // case 2:
         //     let peopleStore = upgradeDB.transaction.objectStore('people');
         //     peopleStore.createIndex('age', 'age');
@@ -379,11 +395,11 @@ class DBHelper {
     }).then( response => {
       
       if (response.length > 0) {
-        console.log('fetch from DB');
+  
         
         return callback(null, response)
       } else {
-        console.log('fetch from network');
+
         
         fetch(`http://localhost:1337/restaurants`).then(function (res) {
           
@@ -411,7 +427,6 @@ class DBHelper {
     }).then( response => {
       // when db response has a value response with that value
       if (response.length>0) {
-        console.log('restaurant', response[0].name, ' fetched from DB' );
         
         return callback(null, response[0])
       }else {
@@ -442,13 +457,33 @@ class DBHelper {
    */
   static fetchRestaurantReviewsById(id, callback) {
    
-    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
-      // console.log('res.json());
-      return res.json()
-    }).then(function (myJson) {
-      console.log(myJson);
-      return myJson
-    });
+    
+    return restDB.then(db => {
+      let tx = db.transaction('reviews');
+      let reviewsStore = tx.objectStore('reviews');
+
+      let raw_reviews = reviewsStore.getAll()
+    
+      return raw_reviews
+    }).then(response => {
+      let reviews = response.filter(review => review.restaurant_id == id)
+      if (reviews.length > 0) {
+       
+        return reviews
+
+      } else {
+        // fetch from network
+        return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
+         
+          return res.json()
+        }).then(function (myJson) {
+        
+          return myJson
+        });
+      }
+    })
+
+
   
 
 
@@ -581,7 +616,7 @@ class DBHelper {
 
 let restaurant;
 var map;
-
+let is_favorite;
 /**
  * Initialize Google map, called from HTML.
  */
@@ -625,6 +660,10 @@ const fetchRestaurantFromURL = (callback) => {
       console.log('restaurant', restaurant, reviews);
       reviews.then(data => {
         self.restaurant.reviews = data
+        console.log('is_favorite? ',self.restaurant);
+        is_favorite = self.restaurant.is_favorite
+        toggleAnimation() 
+        
         if (!restaurant) {
           console.error(error);
           return;
@@ -697,12 +736,22 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 
+const add_review = document.createElement('button')
+
+const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+  
+  
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
+  
   container.appendChild(title);
+
+  add_review.id = 'open-review-form'
+  add_review.innerText = 'Add your own!'
+
+  container.appendChild(add_review)
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -776,19 +825,74 @@ const getParameterByName = (name, url) => {
 }
 
 'use strict';
+// toggle favourite
+let togglefavorite = document.getElementById('toggle-favourite')
+
+
+togglefavorite.onclick = function(event) {
+    const rest_id = parseInt(getParameterByName('id'));
+    
+    is_favorite = !is_favorite
+
+    putData(`http://localhost:1337/restaurants/${rest_id}`, { is_favorite: is_favorite })
+        .then(updateIDBRestFavorite(rest_id, is_favorite))
+        .catch(updateIDBRestFavorite(rest_id, is_favorite))
+        
+    // toggle value`
+    toggleAnimation()
+}
+/**
+ * update restaurant.is_favorite in idb
+ * @param {*} rest_id 
+ * @param {*} is_favorite 
+ */
+function updateIDBRestFavorite(rest_id,is_favorite) {
+    restDB.then(db => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        tx.objectStore('restaurants').iterateCursor(cursor => {
+            if (!cursor) return;
+
+            if (cursor.value.id == rest_id) {
+
+                let new_value = cursor.value
+                new_value.is_favorite = is_favorite
+                cursor.update(new_value)
+            }
+            cursor.continue();
+        });
+        tx.complete.then(() => console.log('done'));
+    })
+}
+
+function toggleAnimation() {
+    if (is_favorite) {
+        document.getElementById('is-favorite-message').innerText = 'Remove from favorites!'
+    } else {
+        document.getElementById('is-favorite-message').innerText = 'Add to favorites!     '
+    }
+    if (is_favorite) {
+        console.log('checked true');
+
+        togglefavorite.checked = true;
+    } else {
+        console.log('checked false');
+        togglefavorite.checked = false;
+    }
+}
+toggleAnimation()
 
 // Modal behavior
 let openModalBtn = document.getElementById('open-review-form');
 let closeModalBtn = document.getElementById('close-review-form');
 let modal = document.getElementById('modal')
 
+add_review.onclick = function () {
+        let modal = document.getElementById('modal');
+        console.log('open modal');
+    
+        modal.style.display = "block"
+    }
 
-openModalBtn.onclick = function () {
-    let modal = document.getElementById('modal');
-    console.log('open modal');
-
-    modal.style.display = "block"
-}
 closeModalBtn.onclick = function () {
     let modal = document.getElementById('modal');
     console.log('close modal');
@@ -800,10 +904,30 @@ window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
+
 }
 
+// TODO: postDATA and putDATA should add to the serviceworker quee for background sync
 
 const postData = (url = ``, data = {}) => {
+    // Default options are marked with *
+    return fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "reload", // *default, no-cache, reload, force-cache, only-if-cached
+        // credentials: "same-origin", // include, same-origin, *omit
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        // redirect: "follow", // manual, *follow, error
+        // referrer: "no-referrer", // no-referrer, *client
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+        .then(response => response.json()) // parses response to JSON
+        .catch(error => console.error(`Fetch Error =\n`, error));
+};
+const putData = (url = ``, data = {}) => {
     // Default options are marked with *
     return fetch(url, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -850,11 +974,27 @@ form.onsubmit = function (event) {
         "rating": rating_value,
         "comments": review_text
     }
-
+    
     postData(`http://localhost:1337/reviews/`, data)
-        .then(data => console.log('data got trough', data)) // JSON from `response.json()` call
+        .then(data => {
+            console.log('data got trough', data)
+            const ul = document.getElementById('reviews-list');
+            ul.appendChild(createReviewHTML(data));
+            // add reviews to the cached idb
+            restDB.then(db => {
+                const tx = db.transaction('reviews', 'readwrite')
+                tx.objectStore('reviews').put(data)
+            })
+
+        })
+        // JSON from `response.json()` call
         .catch(error => console.error(error));
+
 
     modal.style.display = "none"
 
+}
+
+function postReviewtoIDB(data) {
+    
 }

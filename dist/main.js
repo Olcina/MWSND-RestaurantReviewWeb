@@ -395,11 +395,11 @@ class DBHelper {
     }).then( response => {
       
       if (response.length > 0) {
-        console.log('fetch from DB');
+  
         
         return callback(null, response)
       } else {
-        console.log('fetch from network');
+
         
         fetch(`http://localhost:1337/restaurants`).then(function (res) {
           
@@ -427,7 +427,6 @@ class DBHelper {
     }).then( response => {
       // when db response has a value response with that value
       if (response.length>0) {
-        console.log('restaurant', response[0].name, ' fetched from DB' );
         
         return callback(null, response[0])
       }else {
@@ -457,7 +456,7 @@ class DBHelper {
    * Fetch reviews for a restaurant by its ID.
    */
   static fetchRestaurantReviewsById(id, callback) {
-    console.log('fetchRestaurantReview');
+   
     
     return restDB.then(db => {
       let tx = db.transaction('reviews');
@@ -469,16 +468,16 @@ class DBHelper {
     }).then(response => {
       let reviews = response.filter(review => review.restaurant_id == id)
       if (reviews.length > 0) {
-        console.log('reviews feched from restDB', reviews)
+       
         return reviews
 
       } else {
         // fetch from network
         return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`).then(function (res) {
-          // console.log('res.json());
+         
           return res.json()
         }).then(function (myJson) {
-          console.log(myJson);
+        
           return myJson
         });
       }
@@ -754,6 +753,12 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
 const createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  if (restaurant.is_favorite) {
+    const but = document.createElement('span');
+    but.className = 'restaurant-toggle-like'
+    but.innerHTML= '&#9829;'
+    li.append(but)
+  }
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.alt = restaurant.name;
@@ -801,4 +806,16 @@ const addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+
+
+
+// /**
+//  * register sw
+//  */
+
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', () => {
+//     navigator.serviceWorker.register('/sw.js')
+//   })
+// } 
 

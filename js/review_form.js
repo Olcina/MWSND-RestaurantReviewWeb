@@ -2,66 +2,40 @@
 // toggle favourite
 let togglefavorite = document.getElementById('toggle-favourite')
 
-// let is_favorite = false;
+
 togglefavorite.onclick = function(event) {
     const rest_id = parseInt(getParameterByName('id'));
     
-    if(is_favorite) {
-        putData(`http://localhost:1337/restaurants/${rest_id}`, { is_favorite: is_favorite }).then(
-            response =>
-            // update the restaurant in the idb
-            {
-                restDB.then(db => {
-                    const tx = db.transaction('restaurants','readwrite');
-                    tx.objectStore('restaurants').iterateCursor(cursor => {
-                        if (!cursor) return;
-                        if (cursor.value.id == rest_id) {
-                            let new_value = cursor.value
-                            new_value.is_favorite = is_favorite
-                            cursor.update(new_value)
-                        }
-                        cursor.continue();
-                    });
-                    tx.complete.then(() => console.log('done'));
-                })
-            }
-        )
-        
-    } else {
-        // restDB.then(db => {
-        //     let tx = db.transaction('restaurants');
-        //     let restaurantsStore = tx.objectStore('restaurants');
-
-
-        //     return restaurantsStore.get(rest_id)
-
-        // }).then(restaurant => console.log('restaurant from idb on toggle', restaurant))
-        putData(`http://localhost:1337/restaurants/${rest_id}`, {is_favorite: is_favorite}).then(
-            response =>
-            // update the restaurant in the idb
-            {
-                restDB.then(db => {
-                    const tx = db.transaction('restaurants','readwrite');
-                    tx.objectStore('restaurants').iterateCursor(cursor => {
-                        if (!cursor) return;
-                        
-                        if(cursor.value.id == rest_id) {
-                            
-                            let new_value = cursor.value
-                            new_value.is_favorite = is_favorite
-                            cursor.update(new_value)
-                        }
-                        cursor.continue();
-                    });
-                    tx.complete.then(() => console.log('done'));
-                })
-            }
-        )
-
-    }
-    // toggle value`
     is_favorite = !is_favorite
+
+    putData(`http://localhost:1337/restaurants/${rest_id}`, { is_favorite: is_favorite })
+        .then(updateIDBRestFavorite(rest_id, is_favorite))
+        .catch(updateIDBRestFavorite(rest_id, is_favorite))
+        
+    // toggle value`
     toggleAnimation()
+}
+/**
+ * update restaurant.is_favorite in idb
+ * @param {*} rest_id 
+ * @param {*} is_favorite 
+ */
+function updateIDBRestFavorite(rest_id,is_favorite) {
+    restDB.then(db => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        tx.objectStore('restaurants').iterateCursor(cursor => {
+            if (!cursor) return;
+
+            if (cursor.value.id == rest_id) {
+
+                let new_value = cursor.value
+                new_value.is_favorite = is_favorite
+                cursor.update(new_value)
+            }
+            cursor.continue();
+        });
+        tx.complete.then(() => console.log('done'));
+    })
 }
 
 function toggleAnimation() {
@@ -193,4 +167,8 @@ form.onsubmit = function (event) {
 
     modal.style.display = "none"
 
+}
+
+function postReviewtoIDB(data) {
+    
 }

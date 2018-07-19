@@ -32,6 +32,7 @@ gulp.task('watch', function() {
     gulp.watch(['js/*.js'], ['script-restaurant'])
     gulp.watch(['js/*.js'], ['script-main'])
     gulp.watch(['index.js'], ['server:restart'])
+    gulp.watch(['css/styles.css'], ['minify-css'])
 
 })
 
@@ -51,25 +52,25 @@ gulp.task('script-restaurant', function () {
         .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task("webpack", function (callback) {
-    // run webpack
-    gutil.log("[webpack]")
-    webpack(
-        {
-            entry: './js/idb.js',
-            output: {
-                path: path.resolve(__dirname, 'dist'),
-                filename: 'idb-bundle.js'
-        }
-    }
-    , function (err, stats) {
-        if (err) throw new gutil.PluginError("webpack", err);
-        gutil.log("[webpack]", stats.toString({
-            // output options
-        }));
-        callback();
-    });
-});
+// gulp.task("webpack", function (callback) {
+//     // run webpack
+//     gutil.log("[webpack]")
+//     webpack(
+//         {
+//             entry: './js/idb.js',
+//             output: {
+//                 path: path.resolve(__dirname, 'dist'),
+//                 filename: 'idb-bundle.js'
+//         }
+//     }
+//     , function (err, stats) {
+//         if (err) throw new gutil.PluginError("webpack", err);
+//         gutil.log("[webpack]", stats.toString({
+//             // output options
+//         }));
+//         callback();
+//     });
+// });
 // gulp.task("webpack-rest", function (callback) {
 //     // run webpack
 //     gutil.log("[webpack]")
@@ -132,7 +133,17 @@ gulp.task('imagemin', () =>
         .pipe(gulp.dest('dist/images'))
 );
 
+
+
+let cleanCSS = require('gulp-clean-css');
+
+gulp.task('minify-css', () => {
+    return gulp.src('css/*.css')
+        .pipe(cleanCSS({ compatibility: '*' }))
+        .pipe(gulp.dest('css/build'));
+});
+
 // Concatenation of the build process to make it available into npm
 gulp.task('serve', function (callback) {
-    runSequence('server:start', 'webpack', 'script-main', 'script-restaurant','imagemin', 'watch', callback);
+    runSequence('server:start', 'script-main', 'script-restaurant', 'imagemin','minify-css', 'watch', callback);
 });

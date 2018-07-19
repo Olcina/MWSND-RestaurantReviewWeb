@@ -46,7 +46,7 @@ workbox.routing.registerRoute(
 
 // jpg
 workbox.routing.registerRoute(
-    new RegExp('.*\.(?:jpg|gif|png)'),
+    new RegExp('.*\.(?:jpg|gif|png|webp)'),
     workbox.strategies.staleWhileRevalidate({
         cacheName: 'images-cache',
     })

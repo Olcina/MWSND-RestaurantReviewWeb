@@ -73,9 +73,9 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.alt = restaurant.name;
-  image.srcset=`${DBHelper.imageUrlForRestaurant(restaurant,'360w')}.jpg,
-                ${DBHelper.imageUrlForRestaurant(restaurant,'480w')}.jpg,
-                ${DBHelper.imageUrlForRestaurant(restaurant,'800w')}.jpg`
+  image.srcset=`${DBHelper.imageUrlForRestaurant(restaurant,'360w')}.webp,
+                ${DBHelper.imageUrlForRestaurant(restaurant,'480w')}.webp,
+                ${DBHelper.imageUrlForRestaurant(restaurant,'800w')}.webp`
 
   image.sizes = `(max-width: 320px) 280px,
   (max-width: 480px) 440px,

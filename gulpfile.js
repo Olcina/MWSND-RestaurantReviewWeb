@@ -1,7 +1,9 @@
 const gulp = require('gulp');
 const gutil = require('gulp-util')
 const concat = require('gulp-concat');
-var gzip = require('gulp-gzip');
+// var gzip = require('gulp-gzip');
+const workboxBuild = require('workbox-build');
+const imagemin = require('gulp-imagemin');
 
 
 const developServer = require('gulp-develop-server');
@@ -88,7 +90,6 @@ gulp.task("webpack", function (callback) {
 //     });
 // });
 
-const workboxBuild = require('workbox-build');
 
 gulp.task('service-worker', () => {
     return workboxBuild.injectManifest({
@@ -105,7 +106,33 @@ gulp.task('service-worker', () => {
     });
 });
 
+
+// gulp.task('imagemin', () =>
+//     gulp.src('img/*')
+//         .pipe(imagemin([
+//             imagemin.gifsicle({ interlaced: true }),
+//             imagemin.jpegtran({ progressive: true }),
+//             imagemin.optipng({ optimizationLevel: 5 }),
+//             imagemin.svgo({
+//                 plugins: [
+//                     { removeViewBox: true },
+//                     { cleanupIDs: false }
+//                 ]
+//             })
+//         ]))
+//         .pipe(gulp.dest('dist/img'))
+// );
+
+
+const webp = require('gulp-webp');
+
+gulp.task('imagemin', () =>
+    gulp.src('img/*')
+        .pipe(webp())
+        .pipe(gulp.dest('dist/images'))
+);
+
 // Concatenation of the build process to make it available into npm
 gulp.task('serve', function (callback) {
-    runSequence('server:start', 'webpack', 'script-main', 'script-restaurant', 'watch', callback);
+    runSequence('server:start', 'webpack', 'script-main', 'script-restaurant','imagemin', 'watch', callback);
 });

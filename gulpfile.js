@@ -88,6 +88,22 @@ gulp.task("webpack", function (callback) {
 //     });
 // });
 
+const workboxBuild = require('workbox-build');
+
+gulp.task('service-worker', () => {
+    return workboxBuild.injectManifest({
+        swSrc: 'sw.js',
+        swDest: 'dist/sw.js',
+        globDirectory: 'dist',
+        globPatterns: [
+            '**\/*.{js,css,html}',
+        ]
+    }).then(({ count, size, warnings }) => {
+        // Optionally, log any warnings and details.
+        warnings.forEach(console.warn);
+        console.log(`${count} files will be precached, totaling ${size} bytes.`);
+    });
+});
 
 // Concatenation of the build process to make it available into npm
 gulp.task('serve', function (callback) {

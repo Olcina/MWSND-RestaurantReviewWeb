@@ -685,17 +685,32 @@ const fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  self.map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  });
-  updateRestaurants();
+let map_called = false
+
+function callmaps() {
+    console.log('calling maps');
+    let loc = {
+      lat: 40.722216,
+      lng: -73.987501
+    };
+    self.map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 12,
+      center: loc,
+      scrollwheel: false
+    });
+    map_called = true;
+    updateRestaurants();
+} 
+
+// callmaps()
+
+const loadmapbutton = document.getElementById('load-map')
+console.log(loadmapbutton);
+
+loadmapbutton.onclick = function() {
+  callmaps();
+  loadmapbutton.style.display = 'none';
+  document.getElementById('map').style.display = 'block'
 }
 
 /**
@@ -721,6 +736,8 @@ const updateRestaurants = () => {
   })
 }
 
+updateRestaurants();
+
 /**
  * Clear current restaurants, their HTML and remove their map markers.
  */
@@ -744,9 +761,12 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
-  addMarkersToMap();
-  lazyload()
+  if (map_called) {
+    addMarkersToMap();
+  }
+  lazyload();
 }
+
 
 /**
  * Create restaurant HTML.
@@ -769,8 +789,8 @@ const createRestaurantHTML = (restaurant) => {
   image.sizes = `(max-width: 320px) 280px,
                   (max-width: 480px) 440px,
                   800px`
-  image.src = `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}lowq.webp`;
-  // image.src = `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`;
+  // image.src = `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}lowq.webp`;
+  image.src = `data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`;
   image.setAttribute('data-srcset', 
                 `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}.webp,
                   ${DBHelper.imageUrlForRestaurant(restaurant, '480w')}.webp,
@@ -815,17 +835,18 @@ const addMarkersToMap = (restaurants = self.restaurants) => {
 
 
 
+
 // LAZY LOADER
 let observer;
 
 function lazyload() {
   let lazyImages = document.querySelectorAll('.lazy')
 
-  console.log('MY LAZY LOAD IMAGES',lazyImages);
+  console.log('MY LAZY LOAD IMAGES', lazyImages);
 
   const config = {
     // If the image gets within 50px in the Y axis, start the download.
-    rootMargin: '50px 0px',
+    rootMargin: '10px 0px',
     threshold: 0.01
   };
 
@@ -833,7 +854,7 @@ function lazyload() {
   observer = new IntersectionObserver(onIntersection, config);
   lazyImages.forEach(image => {
     console.log(image);
-    
+
     observer.observe(image);
   });
 
@@ -858,7 +879,7 @@ function onIntersection(entries) {
 function preloadImage(img) {
   // Prevent this from being lazy loaded a second time.
   console.log('PRELOADNIG', img);
-  
+
   img.classList.add('restaurant-img');
   img.srcset = img.dataset.srcset;
   img.src = img.dataset.src;

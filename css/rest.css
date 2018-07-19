@@ -4,7 +4,7 @@
 /* CSS Document */
 html, body {
   width: 100%;
-}margin
+}
 body,td,th,p{
 	font-family: Arial, Helvetica, sans-serif;
   font-size: 16pt;
@@ -107,7 +107,6 @@ nav h1 a {
   height: 400px;
   width: 100%;
   background-color: #ccc;
-  display: none;
 }
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
@@ -731,19 +730,4 @@ input:checked + .slider:before {
 
 .fade-in {
   filter: blur(0);
-}
-
-#load-map {
-    width: 90%;
-    margin: 5%;
-    background-color: goldenrod;
-    border: none;
-    border-radius: 15px 0;
-    font-size: 2em;
-    box-shadow: 4px 7px 17px 0px rgba(0,0,0,0.2);
-}
-
-#load-map:hover {
-  box-shadow: 8px 14px 17px 0px rgba(0,0,0,0.4);
-
 }

@@ -7,8 +7,11 @@
   <meta name="theme-color" content="#8da9c9" />
   <!-- css -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/build/styles.css"  type="text/css">
+  <link async defer rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <link rel="stylesheet"  href="css/build/styles.css"  type="text/css">
+  <!-- <link  href="css/build/media740.css" rel="stylesheet" media="(min-width: 740)">
+  <link href="css/build/media950.css" rel="stylesheet" media="(min-width: 950)">
+  <link href="css/build/media1200.css" rel="stylesheet" media="(min-width: 1200)"> -->
   <!-- lazy loader -->
   <!-- <link rel="stylesheet" href="css/progressive-image.min.css">
   <script src="js/progressive-image.min.js"></script> -->
@@ -27,7 +30,7 @@
   <main id="maincontent">
     <div class="header-container">
       <div class="map-wrap">
-
+          <button id="load-map">Load me a Map!</button>
         <section id="map-container" role="application" tabindex="-1">
           <div id="map" tabindex="-1"></div>
         </section>
@@ -72,7 +75,7 @@
 </body>
  <!-- <script type="text/javascript" src="dist/restaurant-idb.js"></script>
 <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script> -->
-<script type="application/javascript" charset="utf-8" src="dist/main.js"></script>
+<script type="application/javascript" charset="utf-8" src="dist/main-min.js"></script>
 <!-- <script type="application/javascript" charset="utf-8" src="sw.js"></script> -->
 <!-- <script>
   if ('serviceWorker' in navigator) {
@@ -98,6 +101,6 @@
 </script>
 
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8TrVPPEWa3dOf6A84Y1m-GN3WwdPWsnI&libraries=places&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8TrVPPEWa3dOf6A84Y1m-GN3WwdPWsnI&libraries=places"></script>
 
 </html>

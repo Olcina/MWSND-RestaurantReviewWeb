@@ -1,0 +1,31 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* On larges screens the filter merge wiht the map */
+@media screen and (min-width: 950px) {
+  .header-container {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+  }
+  .map-wrap{
+    /* width: 450px; */
+    flex: 1 0px;
+  }
+ .filter-wrap{
+   flex: 1;
+  }
+  .filter-options {
+    height: 400px;  
+ }
+ .world-map::after {
+   content: '\1F5FA';
+   width: 100px;
+   height: 100px;
+   color: black;
+   font-size: 100pt;
+ }
+ .world-map {
+   padding-bottom: 25px;
+ }
+}

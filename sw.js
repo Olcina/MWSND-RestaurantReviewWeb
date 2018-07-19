@@ -18,28 +18,28 @@ if (workbox) {
 // javascript
 workbox.routing.registerRoute(
     new RegExp('.*\.js'),
-    workbox.strategies.staleWhileRevalidate({
+    workbox.strategies.cacheFirst({
         cacheName: 'js-cache',
     })
 );
 // css
 workbox.routing.registerRoute(
     new RegExp('.*\.css'),
-    workbox.strategies.staleWhileRevalidate({
+    workbox.strategies.cacheFirst({
         cacheName: 'css-cache',
     })
 );
 // html
 workbox.routing.registerRoute(
     new RegExp('.*\.html'),
-    workbox.strategies.staleWhileRevalidate({
+    workbox.strategies.cacheFirst({
         cacheName: 'html-cache',
     })
 );
 // html
 workbox.routing.registerRoute(
     '/',
-    workbox.strategies.staleWhileRevalidate({
+    workbox.strategies.cacheFirst({
         cacheName: 'html-cache',
     })
 );
@@ -47,14 +47,14 @@ workbox.routing.registerRoute(
 // jpg
 workbox.routing.registerRoute(
     new RegExp('.*\.(?:jpg|gif|png|webp)'),
-    workbox.strategies.staleWhileRevalidate({
+    workbox.strategies.cacheFirst({
         cacheName: 'images-cache',
     })
 );
 // maps assets
 workbox.routing.registerRoute(
-    new RegExp('.*\.(?:cur|woff2)'),
-    workbox.strategies.staleWhileRevalidate({
+    new RegExp('.*\.(?:cur|woff2|webmanifest)'),
+    workbox.strategies.cacheFirst({
         cacheName: 'maps-cache',
     })
 );

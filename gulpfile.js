@@ -4,6 +4,7 @@ const concat = require('gulp-concat');
 // var gzip = require('gulp-gzip');
 const workboxBuild = require('workbox-build');
 const imagemin = require('gulp-imagemin');
+const minify = require('gulp-minify');
 
 
 const developServer = require('gulp-develop-server');
@@ -38,8 +39,9 @@ gulp.task('watch', function() {
 
 
 gulp.task('script-main', function () {
-    return gulp.src(['js/idb-lib.js','js/restaurant-idb.js', 'js/dbhelper.js', 'js/main.js'])
+    return gulp.src(['js/idb-lib.js','js/restaurant-idb.js', 'js/dbhelper.js', 'js/main.js','js/lazy-loader.js'])
         .pipe(concat('main.js'))
+        .pipe(minify())
         .pipe(gulp.dest('./dist/'));
 });
 gulp.task('script-restaurant', function () {
@@ -47,8 +49,10 @@ gulp.task('script-restaurant', function () {
                      'js/restaurant-idb.js',
                      'js/dbhelper.js',
                      'js/restaurant_info.js',
+                     'js/lazy-loader.js',
                      'js/review_form.js'])
         .pipe(concat('restaurant_info.js'))
+        .pipe(minify())
         .pipe(gulp.dest('./dist/'));
 });
 
@@ -143,7 +147,9 @@ gulp.task('minify-css', () => {
         .pipe(gulp.dest('css/build'));
 });
 
+
+
 // Concatenation of the build process to make it available into npm
 gulp.task('serve', function (callback) {
-    runSequence('server:start', 'script-main', 'script-restaurant', 'imagemin','minify-css', 'watch', callback);
+    runSequence('server:start', 'script-main', 'script-restaurant', 'imagemin', 'minify-css', 'watch', callback);
 });

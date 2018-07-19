@@ -1,0 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* On huge screens we just left the space open */
+@media screen and (min-width: 1200px) {
+ main {
+   width: 1200px;
+   margin: 0 auto;
+  }
+  .container {
+    background-color: #5e5e5e;
+ }
+}
+
+

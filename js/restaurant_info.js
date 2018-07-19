@@ -18,6 +18,7 @@ window.initMap = () => {
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
+  document.getElementById('map').style.display = 'block'
 }
 
 /**
@@ -71,18 +72,20 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+
+
+  image.className = 'lazy';
   image.alt = restaurant.name;
-  image.srcset=`${DBHelper.imageUrlForRestaurant(restaurant,'360w')}.webp,
-                ${DBHelper.imageUrlForRestaurant(restaurant,'480w')}.webp,
-                ${DBHelper.imageUrlForRestaurant(restaurant,'800w')}.webp`
-
   image.sizes = `(max-width: 320px) 280px,
-  (max-width: 480px) 440px,
-  800px`
-  image.src = DBHelper.imageUrlForRestaurant(restaurant, '800w');
+                  (max-width: 480px) 440px,
+                  800px`
+  image.src = `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}lowq.webp`;
 
-  console.log(DBHelper.imageUrlForRestaurant(restaurant, '800w'));
+  image.setAttribute('data-srcset',
+                `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}.webp,
+                 ${DBHelper.imageUrlForRestaurant(restaurant, '480w')}.webp,
+                 ${DBHelper.imageUrlForRestaurant(restaurant, '800w')}.webp`)
+  image.setAttribute('data-src', `${DBHelper.imageUrlForRestaurant(restaurant, '800w')}.webp`)
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -95,6 +98,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   // fetch reviews and appendit to the restaurant
     fillReviewsHTML();
+    lazyload();
 }
 
 /**

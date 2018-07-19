@@ -634,6 +634,7 @@ window.initMap = () => {
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
+  document.getElementById('map').style.display = 'block'
 }
 
 /**
@@ -687,18 +688,20 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+
+
+  image.className = 'lazy';
   image.alt = restaurant.name;
-  image.srcset=`${DBHelper.imageUrlForRestaurant(restaurant,'360w')}.webp,
-                ${DBHelper.imageUrlForRestaurant(restaurant,'480w')}.webp,
-                ${DBHelper.imageUrlForRestaurant(restaurant,'800w')}.webp`
-
   image.sizes = `(max-width: 320px) 280px,
-  (max-width: 480px) 440px,
-  800px`
-  image.src = DBHelper.imageUrlForRestaurant(restaurant, '800w');
+                  (max-width: 480px) 440px,
+                  800px`
+  image.src = `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}lowq.webp`;
 
-  console.log(DBHelper.imageUrlForRestaurant(restaurant, '800w'));
+  image.setAttribute('data-srcset',
+                `${DBHelper.imageUrlForRestaurant(restaurant, '360w')}.webp,
+                 ${DBHelper.imageUrlForRestaurant(restaurant, '480w')}.webp,
+                 ${DBHelper.imageUrlForRestaurant(restaurant, '800w')}.webp`)
+  image.setAttribute('data-src', `${DBHelper.imageUrlForRestaurant(restaurant, '800w')}.webp`)
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -711,6 +714,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   // fetch reviews and appendit to the restaurant
     fillReviewsHTML();
+    lazyload();
 }
 
 /**
@@ -824,6 +828,56 @@ const getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+
+// LAZY LOADER
+let observer;
+
+function lazyload() {
+  let lazyImages = document.querySelectorAll('.lazy')
+
+  console.log('MY LAZY LOAD IMAGES', lazyImages);
+
+  const config = {
+    // If the image gets within 50px in the Y axis, start the download.
+    rootMargin: '10px 0px',
+    threshold: 0.01
+  };
+
+  // The observer for the images on the page
+  observer = new IntersectionObserver(onIntersection, config);
+  lazyImages.forEach(image => {
+    console.log(image);
+
+    observer.observe(image);
+  });
+
+}
+
+
+
+function onIntersection(entries) {
+  // Loop through the entries
+  entries.forEach(entry => {
+    // Are we in viewport?
+    if (entry.intersectionRatio > 0) {
+
+      // Stop watching and load the image
+      observer.unobserve(entry.target);
+      preloadImage(entry.target);
+    }
+  });
+}
+
+
+function preloadImage(img) {
+  // Prevent this from being lazy loaded a second time.
+  console.log('PRELOADNIG', img);
+
+  img.classList.add('restaurant-img');
+  img.srcset = img.dataset.srcset;
+  img.src = img.dataset.src;
+  img.classList.add('fade-in');
+}
 'use strict';
 // toggle favourite
 let togglefavorite = document.getElementById('toggle-favourite')

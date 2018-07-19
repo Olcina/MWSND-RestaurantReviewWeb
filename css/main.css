@@ -4,7 +4,7 @@
 /* CSS Document */
 html, body {
   width: 100%;
-}margin
+}
 body,td,th,p{
 	font-family: Arial, Helvetica, sans-serif;
   font-size: 16pt;
@@ -81,7 +81,7 @@ nav h1 a {
 
 /* Display list items side by side */
 #breadcrumb li {
-    display: inline;
+    display: none;
 }
 
 /* Add a slash symbol (/) before/behind each list item */
@@ -316,153 +316,6 @@ select {
   width: 90%;
   max-width: 350px;
 }
-
-#reviews-container h2 {
-  color: #bb8200;
-  font-size: 24pt;
-  font-weight: 300;
-  text-transform: uppercase;
-  flex: 1 100%;
-}
-#reviews-list {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: baseline;
-  width: 95%;
-  
-}
-#reviews-list li {
-  background-color: #fff;
-  display: flex;
-  flex-flow: row wrap;
-  align-content: space-between;
-  list-style-type: none;
-  overflow: hidden;
-  border-radius: 15px 0 15px 0;
-  width: 90%;
-  margin: 0 auto;
-  margin-bottom: 15px;
-  max-width: 350px;
-}
-
-#reviews-list li p:nth-child(-n + 2) {
-  background-color: black;
-  color: white;
-  flex: 1 50%;
-  text-align: right;
-  font-size: 12pt;
-  padding: 10px;
-  margin: 0 0 10px;
-}
-#reviews-list li p:first-child {
-  flex: 1;
-  text-align: center;
-  font-size: 20pt;
-  font-weight: bold;
-  margin: 0 0 10px;
-}
-
-#rating {
-  margin: 10px;
-  background-color: goldenrod;
-  padding: 5px;
-  border-radius: 5px;
-}
-#rating-content {
-  margin: 10px;
-  text-align: justify;
-}
-
-#restaurant-hours {
-  width: 90%;
-  align-self: center;
-}
-#restaurant-hours td {
-  color: #666;
-  max-width: 50%;
-  /* border-bottom: 1px solid black; */
-}
-@media screen and (min-width: 740px)  {
-  #restaurant-container {
-    display: flex;
-    flex-flow: row wrap
-  }
-  #restaurant-name {
-    flex: 1 100%;
-    text-align: center;
-  }
-  .restaurant-badge {
-    flex: 1;
-    margin: 20px;
-  }
-  .restaurant-timetable {
-    flex: 1;
-  }
-  
-}
-/* On medium screens the filter has rows */
-@media screen and (min-width: 650px) and (max-width: 950px) {
-  .filter-options {
-    display: flex;
-    flex-flow: row wrap;
-    align-content: space-around;
-  }
-  .filter-options h2 {
-    flex: 1 100%;
-  }
-  .select {
-    flex: 1 40%; 
-    margin-left: 15px;
-    margin-right: 15px;
-  }
-    .select.pan {
-      margin-left: 0;
-    }
-    
-  }
-/* On larges screens the filter merge wiht the map */
-@media screen and (min-width: 950px) {
-  .header-container {
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-  }
-  .map-wrap{
-    /* width: 450px; */
-    flex: 1 0px;
-  }
- .filter-wrap{
-   flex: 1;
-  }
-  .filter-options {
-    height: 400px;  
- }
- .world-map::after {
-   content: '\1F5FA';
-   width: 100px;
-   height: 100px;
-   color: black;
-   font-size: 100pt;
- }
- .world-map {
-   padding-bottom: 25px;
- }
-}
-/* On huge screens we just left the space open */
-@media screen and (min-width: 1200px) {
- main {
-   width: 1200px;
-   margin: 0 auto;
-  }
-  .container {
-    background-color: #5e5e5e;
- }
-}
-
-
-
 
 /* MODAL FOR REVIEW FORM */
 .modal {
@@ -731,19 +584,4 @@ input:checked + .slider:before {
 
 .fade-in {
   filter: blur(0);
-}
-
-#load-map {
-    width: 90%;
-    margin: 5%;
-    background-color: goldenrod;
-    border: none;
-    border-radius: 15px 0;
-    font-size: 2em;
-    box-shadow: 4px 7px 17px 0px rgba(0,0,0,0.2);
-}
-
-#load-map:hover {
-  box-shadow: 8px 14px 17px 0px rgba(0,0,0,0.4);
-
 }

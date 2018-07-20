@@ -39,12 +39,12 @@
     <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
-      <h2 id="restaurant-name"></h1>
+      <h2 id="restaurant-name"></h2>
       <div class="restaurant-badge">
 
         <img id="restaurant-img">
         <p id="restaurant-cuisine"></p> 
-        <div class="favorite-toggle-div">
+        <div class="favorite-toggle-div" role="form">
           <p id="is-favorite-message" >Add to Favorites!</p>
           <label class="switch">
             <input id="toggle-favourite" name="toggle-favorite-restaurant" type="checkbox">
@@ -73,7 +73,7 @@
     <div id="modal" class="modal">
       <div class="modal-content">
         <button id="close-review-form">X</button>
-        <form class="modal-form" id="review-form" action="/review" method="post">
+        <form class="modal-form" id="review-form" action="/review" method="post" role="form">
             <h2>Write your own review</h2>
             <div class="form-review-card">  
               <!--<label for="name">Your name:</label>-->

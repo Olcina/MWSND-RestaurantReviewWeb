@@ -498,6 +498,7 @@ select {
     border: none;
     color: goldenrod;
     background-color: black;
+    z-index: 1;
 }
 
 /* toggle slider */

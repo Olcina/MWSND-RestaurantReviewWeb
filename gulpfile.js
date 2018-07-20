@@ -46,6 +46,7 @@ gulp.task('script-main', function () {
 });
 gulp.task('script-restaurant', function () {
     return gulp.src(['js/idb-lib.js',
+                     'js/toast.js',
                      'js/restaurant-idb.js',
                      'js/dbhelper.js',
                      'js/restaurant_info.js',

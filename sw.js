@@ -65,19 +65,38 @@ const queue = new workbox.backgroundSync.Queue('user-action-queue');
 self.addEventListener('fetch', (event) => {
     // Clone the request to ensure it's save to read when
     // adding to the Queue.
-    console.log('QUEUE FETCH', event);
+    // only when offline
     
-    const promiseChain = fetch(event.request.clone())
+    if(!navigator.onLine) {
+        console.log('QUEUE FETCH', event);
+        
+        const promiseChain = fetch(event.request.clone())
         .catch((err) => {
             console.log(err);
             
             return queue.addRequest(event.request);
         });
-
-    event.waitUntil(promiseChain);
+        event.waitUntil(promiseChain);
+    
+    } else {
+        // if feetch was made online first replay the request queue to aviod id problems in the server
+        console.log('QUEUE OBJECT',queue)
+        const promiseChain = queue.replayRequests(done => {
+            console.log('done',done);
+            
+            return done
+        })
+        event.waitUntil(promiseChain)
+        
+    }
 });
 
 
+// window.addEventListener('offline', function (e) {
+//     console.log('service worker when online from window event listener');
+// // 
+//     queue.replayRequests()
+// })
 // // cache name
 // const cache_version = 'restaurant-cache-v1'
 

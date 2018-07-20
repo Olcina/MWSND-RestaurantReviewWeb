@@ -314,6 +314,31 @@
         self.idb = exp;
     }
 }());
+// script from https://www.w3schools.com/howto/howto_js_snackbar.asp
+
+window.addEventListener('offline', function (e) {
+
+    activateToast('toast', 'Connection with the server was lost')
+
+});
+
+window.addEventListener('online', function (e) { 
+
+    activateToast('toast','Connection with the server was restablished')
+     
+});
+
+function activateToast(html_id, message) {
+
+    var toast = document.getElementById(html_id);
+
+    // Add the "show" class to DIV
+    toast.innerText = message
+    toast.className = "toast show";
+
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
+}
 // open an put a value on the db
 const restDB = idb.open('restaurant-db', 2, upgradeDB => {
     switch (upgradeDB.oldVersion) {
@@ -1036,52 +1061,36 @@ form.onsubmit = function (event) {
         console.log('offline');
     }
     
-    postData(`http://localhost:1337/reviews/`, data)
-        .then(data => {
-            console.log('data got trough', data)
-            const ul = document.getElementById('reviews-list');
-            ul.appendChild(createReviewHTML(data));
-            // add reviews to the cached idb
-            restDB.then(db => {
-                const tx = db.transaction('reviews', 'readwrite')
-                tx.objectStore('reviews').put(data)
+        restDB.then(db => {
+            const tx = db.transaction('reviews', 'readonly');
+            const store = tx.objectStore('reviews');
+            return store.count()
+        }).then(count => {
+            console.log('reviews offline count:',count);
+            
+            restDB.then( db => {
+                const creationDate = Date.now()
+                data.id = count+1;
+                data.createdAt = creationDate;
+                data.updatedAt = creationDate;
+
+                console.log('data with id',data);
+                
+                const tx = db.transaction('reviews', 'readwrite');
+                const store = tx.objectStore('reviews');
+                // store the new review in the idb
+                store.put(data)
+                // append the review to the html
+                const ul = document.getElementById('reviews-list');
+                ul.appendChild(createReviewHTML(data));
+                
             })
-
-        })
-        // JSON from `response.json()` call
-        .catch(error => console.error(error));
-
+            }).then(
+                // send a post request to the sw queue to update the server when online
+                postData(`http://localhost:1337/reviews/`, data))
+    
+    
 
     modal.style.display = "none"
 
-}
-
-function postReviewtoIDB(data) {
-    
-}
-
-// script from https://www.w3schools.com/howto/howto_js_snackbar.asp
-
-window.addEventListener('offline', function (e) {
-
-    activateToast('toast', 'Connection with the server was lost')
-
-});
-
-window.addEventListener('online', function (e) { 
-
-    activateToast('toast','Connection with the server was restablished')
-     
-});
-
-function activateToast(html_id, message) {
-
-    var toast = document.getElementById(html_id);
-
-    // Add the "show" class to DIV
-    toast.innerText = message
-    toast.className = "toast show";
-
-    // After 3 seconds, remove the show class from DIV
-    setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
 }

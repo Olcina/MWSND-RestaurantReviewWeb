@@ -986,7 +986,7 @@ window.onclick = function (event) {
 
 }
 
-// TODO: postDATA and putDATA should add to the serviceworker quee for background sync
+// HELPERS: postDATA and putDATA utilities
 
 const postData = (url = ``, data = {}) => {
     // Default options are marked with *
@@ -1025,7 +1025,7 @@ const putData = (url = ``, data = {}) => {
         .catch(error => console.error(`Fetch Error =\n`, error));
 };
 
-// Review form behavior
+
 let form = document.getElementById('modal')
 
 form.onsubmit = function (event) {

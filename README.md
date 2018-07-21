@@ -32,10 +32,10 @@ yarn start
 
 ## Project end point
 
-After these steps you will find the client running in your browser under the following address:
+After these steps x`you will find the client running in your browser under the following address:
 
 ```
 http://localhost:8000
 ```
 
-The server endpoints can be found in the original repository documentation (server folder), or here[here](https://www.google.com)
+The server endpoints can be found in the [original repository](https://github.com/udacity/mws-restaurant-stage-3) documentation or in the `server` folder

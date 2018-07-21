@@ -14,7 +14,6 @@ yarn install
 cd server
 
 yarn install 
-
 ```
 
 ## Setting up the project for development
@@ -29,7 +28,14 @@ yarn gulp
 cd server
 
 yarn start
-
 ```
 
+## Project end point
 
+After these steps you will find the client running in your browser under the following address:
+
+```
+http://localhost:8000
+```
+
+The server endpoints can be found in the original repository documentation (server folder), or here[here](https://www.google.com)
